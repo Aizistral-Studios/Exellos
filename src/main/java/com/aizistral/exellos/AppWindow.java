@@ -5,11 +5,15 @@ import static com.aizistral.exellos.Main.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,10 +23,17 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.aizistral.exellos.AppBrowseListener.Type;
 import javax.swing.JTextArea;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 
 public class AppWindow {
 	JFrame frmExellos;
@@ -113,26 +124,65 @@ public class AppWindow {
 		});
 		ballButton.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
+		ImageIcon copyIconNormal = new ImageIcon(AppWindow.class.getResource("/assets/copy-icon-2.png"));
+		ImageIcon copyIconSuccess = new ImageIcon(AppWindow.class.getResource("/assets/copy-icon-2-success.png"));
+
+		JButton copyButton = new JButton("Copy Output");
+		copyButton.setIcon(copyIconNormal);
+		copyButton.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		copyButton.addActionListener(event -> {
+			String output = textArea.getText();
+
+			if (StringUtils.isEmpty(output)) {
+				this.showError("Cannot copy - no output generated yet!");
+				return;
+			}
+
+			StringSelection selection = new StringSelection(output);
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(selection, null);
+
+			// Save original state
+			String originalText = copyButton.getText();
+			Icon originalIcon = copyButton.getIcon();
+
+			// Show success state
+			copyButton.setText("Copied!");
+			copyButton.setIcon(copyIconSuccess);
+
+			// Restore after 3 seconds
+			Timer timer = new Timer(3000, restoreEvent -> {
+				copyButton.setText(originalText);
+				copyButton.setIcon(originalIcon);
+			});
+
+			timer.setRepeats(false);
+			timer.start();
+		});
+
 		GroupLayout gl_encryptPanel = new GroupLayout(encryptPanel);
 		gl_encryptPanel.setHorizontalGroup(
-				gl_encryptPanel.createParallelGroup(Alignment.TRAILING)
-				.addGroup(Alignment.LEADING, gl_encryptPanel.createSequentialGroup()
+				gl_encryptPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_encryptPanel.createSequentialGroup()
 						.addContainerGap()
-						.addGroup(gl_encryptPanel.createParallelGroup(Alignment.LEADING)
-								.addComponent(textArea, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
-								.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+						.addGroup(gl_encryptPanel.createParallelGroup(Alignment.TRAILING)
+								.addComponent(textArea, GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
 								.addComponent(ballButton, GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
-								.addGroup(Alignment.TRAILING, gl_encryptPanel.createSequentialGroup()
+								.addGroup(gl_encryptPanel.createSequentialGroup()
 										.addGroup(gl_encryptPanel.createParallelGroup(Alignment.LEADING, false)
 												.addComponent(encryptionLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 												.addComponent(inputLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 										.addGap(8)
 										.addGroup(gl_encryptPanel.createParallelGroup(Alignment.TRAILING)
 												.addGroup(gl_encryptPanel.createSequentialGroup()
-														.addComponent(this.encryptInputField, GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+														.addComponent(this.encryptInputField, GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
 														.addPreferredGap(ComponentPlacement.UNRELATED)
 														.addComponent(inputBrowse, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE))
-												.addComponent(this.encryptPasswordField, GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE))))
+												.addComponent(this.encryptPasswordField, GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)))
+								.addGroup(gl_encryptPanel.createSequentialGroup()
+										.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(copyButton, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)))
 						.addContainerGap())
 				);
 		gl_encryptPanel.setVerticalGroup(
@@ -150,9 +200,11 @@ public class AppWindow {
 						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addComponent(ballButton, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_encryptPanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+								.addComponent(copyButton, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(textArea, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+						.addComponent(textArea, GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
 						.addContainerGap())
 				);
 		encryptPanel.setLayout(gl_encryptPanel);
@@ -164,12 +216,12 @@ public class AppWindow {
 		ballButton_1.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		ballButton_1.addActionListener(event -> {
 			try {
-				Path input = Paths.get(this.decryptInputField.getText());
-				Path output = Paths.get(this.decryptOutputField.getText());
+				Path inputFile = Paths.get(this.decryptInputField.getText());
+				Path outputFile = Paths.get(this.decryptOutputField.getText());
 				String encryptionKey = this.decryptPasswordField.getText();
 
 				//QRDecoder.decode(input, output, encryptionKey);
-				this.showSuccess("Successfully saved decrypted file to: " + output);
+				this.showSuccess("Successfully saved decrypted file to: " + outputFile);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				this.showException("Error during decryption!", ex);
@@ -267,6 +319,10 @@ public class AppWindow {
 
 	void showSuccess(String message) {
 		JOptionPane.showMessageDialog(this.frmExellos, message, "Operation Successful", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	void showError(String error) {
+		JOptionPane.showMessageDialog(this.frmExellos, error, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	void showException(String message, Exception exception) {
