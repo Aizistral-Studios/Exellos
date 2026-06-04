@@ -1,4 +1,4 @@
-package com.aizistral.papyrq;
+package com.aizistral.exellos;
 
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;

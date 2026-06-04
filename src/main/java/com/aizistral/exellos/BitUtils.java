@@ -1,4 +1,4 @@
-package com.aizistral.papyrq;
+package com.aizistral.exellos;
 
 import java.util.Arrays;
 import java.util.List;

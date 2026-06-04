@@ -1,6 +1,6 @@
-package com.aizistral.papyrq;
+package com.aizistral.exellos;
 
-import static com.aizistral.papyrq.Main.*;
+import static com.aizistral.exellos.Main.*;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -21,16 +21,16 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import com.aizistral.papyrq.AppBrowseListener.Type;
+import com.aizistral.exellos.AppBrowseListener.Type;
+import javax.swing.JTextArea;
 
 public class AppWindow {
-	JFrame frmPapyrQ;
-	JTextField encodeInputField;
-	JTextField encodeOutputField;
-	JTextField encodeEncryptionKeyField;
-	JTextField decodeInputField;
-	JTextField decodeOutputField;
-	JTextField decodeEncryptionKeyField;
+	JFrame frmExellos;
+	JTextField encryptInputField;
+	JTextField encryptPasswordField;
+	JTextField decryptInputField;
+	JTextField decryptOutputField;
+	JTextField decryptPasswordField;
 
 	/**
 	 * Create the application.
@@ -45,19 +45,19 @@ public class AppWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		this.frmPapyrQ = new JFrame();
-		this.frmPapyrQ.setTitle("PapyrQ");
-		this.frmPapyrQ.getContentPane().setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		this.frmPapyrQ.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		this.frmPapyrQ.setResizable(true);
-		this.frmPapyrQ.setLocation(100, 100);
-		this.frmPapyrQ.setMinimumSize(new Dimension(500, 265));
-		this.frmPapyrQ.setSize(630, 265);
-		this.frmPapyrQ.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.frmPapyrQ.getContentPane().setLayout(new BorderLayout(0, 0));
+		this.frmExellos = new JFrame();
+		this.frmExellos.setTitle("Exellos");
+		this.frmExellos.getContentPane().setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		this.frmExellos.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		this.frmExellos.setResizable(true);
+		this.frmExellos.setLocation(100, 100);
+		this.frmExellos.setMinimumSize(new Dimension(500, 300));
+		this.frmExellos.setSize(630, 400);
+		this.frmExellos.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.frmExellos.getContentPane().setLayout(new BorderLayout(0, 0));
 
 		JPanel mainPanel = new JPanel();
-		this.frmPapyrQ.getContentPane().add(mainPanel, BorderLayout.CENTER);
+		this.frmExellos.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		mainPanel.setLayout(new BorderLayout(0, 0));
 
@@ -66,50 +66,46 @@ public class AppWindow {
 		mainPanel.add(tabbedPane);
 
 		JPanel encryptPanel = new JPanel();
-		tabbedPane.addTab("Encode", null, encryptPanel, null);
+		tabbedPane.addTab("Encrypt", null, encryptPanel, null);
 
-		JLabel inputLabel = new JLabel("Input File:");
+		JLabel inputLabel = new JLabel(" Input File: ");
 		inputLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		inputLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-		this.encodeInputField = new JTextField();
-		this.encodeInputField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		this.encodeInputField.setColumns(10);
+		this.encryptInputField = new JTextField();
+		this.encryptInputField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		this.encryptInputField.setColumns(10);
 
 		JButton inputBrowse = new JButton("Browse");
-		inputBrowse.addActionListener(new AppBrowseListener(this, Type.ENCODE_INPUT));
+		inputBrowse.addActionListener(new AppBrowseListener(this, Type.ENCRYPT_INPUT));
 		inputBrowse.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-		JLabel outputLabel = new JLabel("Output File:");
-		outputLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		outputLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-
-		this.encodeOutputField = new JTextField();
-		this.encodeOutputField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		this.encodeOutputField.setColumns(10);
-
-		JButton outputBrowse = new JButton("Browse");
-		outputBrowse.addActionListener(new AppBrowseListener(this, Type.ENCODE_OUTPUT));
-		outputBrowse.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-
-		JLabel encryptionLabel = new JLabel("Encryption Key:");
+		JLabel encryptionLabel = new JLabel(" Password: ");
 		encryptionLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		encryptionLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-		this.encodeEncryptionKeyField = new JTextField();
-		this.encodeEncryptionKeyField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		this.encodeEncryptionKeyField.setColumns(10);
-		this.encodeEncryptionKeyField.setEnabled(true);
+		this.encryptPasswordField = new JTextField();
+		this.encryptPasswordField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		this.encryptPasswordField.setColumns(10);
+		this.encryptPasswordField.setEnabled(true);
 
-		JButton ballButton = new JButton("Encode!");
+		JLabel lblNewLabel = new JLabel(" Output: ");
+		lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+
+		JTextArea textArea = new JTextArea();
+		textArea.setEditable(false);
+		textArea.setLineWrap(true);
+
+		JButton ballButton = new JButton("Encrypt!");
 		ballButton.addActionListener(event -> {
 			try {
-				Path input = Paths.get(this.encodeInputField.getText());
-				Path output = Paths.get(this.encodeOutputField.getText());
-				String encryptionKey = this.encodeEncryptionKeyField.getText();
+				Path input = Paths.get(this.encryptInputField.getText());
+				String password = this.encryptPasswordField.getText();
+				String encryptedBase64 = FileEncryptor.encrypt(input, password);
 
-				//QREncoder.encode(input, output, encryptionKey);
-				this.showSuccess("Successfully saved QR codes to: " + output);
+				textArea.setText(encryptedBase64);
+
+				this.showSuccess("Encryption successful!");
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				this.showException("Error during encoding!", ex);
@@ -120,26 +116,23 @@ public class AppWindow {
 		GroupLayout gl_encryptPanel = new GroupLayout(encryptPanel);
 		gl_encryptPanel.setHorizontalGroup(
 				gl_encryptPanel.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_encryptPanel.createSequentialGroup()
+				.addGroup(Alignment.LEADING, gl_encryptPanel.createSequentialGroup()
 						.addContainerGap()
-						.addGroup(gl_encryptPanel.createParallelGroup(Alignment.TRAILING)
-								.addComponent(ballButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
-								.addGroup(gl_encryptPanel.createSequentialGroup()
+						.addGroup(gl_encryptPanel.createParallelGroup(Alignment.LEADING)
+								.addComponent(textArea, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+								.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+								.addComponent(ballButton, GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+								.addGroup(Alignment.TRAILING, gl_encryptPanel.createSequentialGroup()
 										.addGroup(gl_encryptPanel.createParallelGroup(Alignment.LEADING, false)
 												.addComponent(encryptionLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(inputLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(outputLabel, GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
+												.addComponent(inputLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 										.addGap(8)
 										.addGroup(gl_encryptPanel.createParallelGroup(Alignment.TRAILING)
 												.addGroup(gl_encryptPanel.createSequentialGroup()
-														.addComponent(this.encodeInputField, GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
+														.addComponent(this.encryptInputField, GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
 														.addPreferredGap(ComponentPlacement.UNRELATED)
 														.addComponent(inputBrowse, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE))
-												.addGroup(gl_encryptPanel.createSequentialGroup()
-														.addComponent(this.encodeOutputField, GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
-														.addPreferredGap(ComponentPlacement.UNRELATED)
-														.addComponent(outputBrowse, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE))
-												.addComponent(this.encodeEncryptionKeyField, GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE))))
+												.addComponent(this.encryptPasswordField, GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE))))
 						.addContainerGap())
 				);
 		gl_encryptPanel.setVerticalGroup(
@@ -148,40 +141,38 @@ public class AppWindow {
 						.addContainerGap()
 						.addGroup(gl_encryptPanel.createParallelGroup(Alignment.BASELINE, false)
 								.addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-								.addComponent(this.encodeInputField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+								.addComponent(this.encryptInputField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
 								.addComponent(inputBrowse, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addGroup(gl_encryptPanel.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_encryptPanel.createParallelGroup(Alignment.BASELINE)
-										.addComponent(outputLabel, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-										.addComponent(this.encodeOutputField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-								.addComponent(outputBrowse, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addGroup(gl_encryptPanel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(this.encodeEncryptionKeyField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+								.addComponent(this.encryptPasswordField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
 								.addComponent(encryptionLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addComponent(ballButton, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-						.addGap(119))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(textArea, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+						.addContainerGap())
 				);
 		encryptPanel.setLayout(gl_encryptPanel);
 
 		JPanel decryptPanel = new JPanel();
-		tabbedPane.addTab("Decode", null, decryptPanel, null);
+		tabbedPane.addTab("Decrypt", null, decryptPanel, null);
 
-		JButton ballButton_1 = new JButton("Decode!");
+		JButton ballButton_1 = new JButton("Decrypt!");
 		ballButton_1.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		ballButton_1.addActionListener(event -> {
 			try {
-				Path input = Paths.get(this.decodeInputField.getText());
-				Path output = Paths.get(this.decodeOutputField.getText());
-				String encryptionKey = this.decodeEncryptionKeyField.getText();
+				Path input = Paths.get(this.decryptInputField.getText());
+				Path output = Paths.get(this.decryptOutputField.getText());
+				String encryptionKey = this.decryptPasswordField.getText();
 
 				//QRDecoder.decode(input, output, encryptionKey);
-				this.showSuccess("Successfully saved decoded file to: " + output);
+				this.showSuccess("Successfully saved decrypted file to: " + output);
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				this.showException("Error during encoding!", ex);
+				this.showException("Error during decryption!", ex);
 			}
 		});
 
@@ -197,26 +188,26 @@ public class AppWindow {
 		outputLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		outputLabel_1.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-		this.decodeInputField = new JTextField();
-		this.decodeInputField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		this.decodeInputField.setColumns(10);
+		this.decryptInputField = new JTextField();
+		this.decryptInputField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		this.decryptInputField.setColumns(10);
 
-		JButton decodeInputBrowseButton = new JButton("Browse");
-		decodeInputBrowseButton.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		decodeInputBrowseButton.addActionListener(new AppBrowseListener(this, Type.DECODE_INPUT));
+		JButton decryptInputBrowseButton = new JButton("Browse");
+		decryptInputBrowseButton.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		decryptInputBrowseButton.addActionListener(new AppBrowseListener(this, Type.DECRYPT_INPUT));
 
-		this.decodeOutputField = new JTextField();
-		this.decodeOutputField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		this.decodeOutputField.setColumns(10);
+		this.decryptOutputField = new JTextField();
+		this.decryptOutputField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		this.decryptOutputField.setColumns(10);
 
 		JButton decodeOutputBrowseButton = new JButton("Browse");
 		decodeOutputBrowseButton.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		decodeOutputBrowseButton.addActionListener(new AppBrowseListener(this, Type.DECODE_OUTPUT));
+		decodeOutputBrowseButton.addActionListener(new AppBrowseListener(this, Type.DECRYPT_OUTPUT));
 
-		this.decodeEncryptionKeyField = new JTextField();
-		this.decodeEncryptionKeyField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		this.decodeEncryptionKeyField.setColumns(10);
-		this.decodeEncryptionKeyField.setEnabled(true);
+		this.decryptPasswordField = new JTextField();
+		this.decryptPasswordField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		this.decryptPasswordField.setColumns(10);
+		this.decryptPasswordField.setEnabled(true);
 
 		GroupLayout gl_decryptPanel = new GroupLayout(decryptPanel);
 		gl_decryptPanel.setHorizontalGroup(
@@ -234,14 +225,14 @@ public class AppWindow {
 										.addGap(8)
 										.addGroup(gl_decryptPanel.createParallelGroup(Alignment.TRAILING)
 												.addGroup(gl_decryptPanel.createSequentialGroup()
-														.addComponent(this.decodeInputField, GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
+														.addComponent(this.decryptInputField, GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
 														.addPreferredGap(ComponentPlacement.UNRELATED)
-														.addComponent(decodeInputBrowseButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE))
+														.addComponent(decryptInputBrowseButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE))
 												.addGroup(gl_decryptPanel.createSequentialGroup()
-														.addComponent(this.decodeOutputField, GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
+														.addComponent(this.decryptOutputField, GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
 														.addPreferredGap(ComponentPlacement.UNRELATED)
 														.addComponent(decodeOutputBrowseButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE))
-												.addComponent(this.decodeEncryptionKeyField, GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE))))
+												.addComponent(this.decryptPasswordField, GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE))))
 						.addContainerGap())
 				);
 		gl_decryptPanel.setVerticalGroup(
@@ -251,17 +242,17 @@ public class AppWindow {
 						.addContainerGap()
 						.addGroup(gl_decryptPanel.createParallelGroup(Alignment.BASELINE)
 								.addComponent(inputLabel_1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-								.addComponent(this.decodeInputField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-								.addComponent(decodeInputBrowseButton, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
+								.addComponent(this.decryptInputField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+								.addComponent(decryptInputBrowseButton, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addGroup(gl_decryptPanel.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_decryptPanel.createParallelGroup(Alignment.BASELINE)
 										.addComponent(outputLabel_1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-										.addComponent(this.decodeOutputField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+										.addComponent(this.decryptOutputField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
 								.addComponent(decodeOutputBrowseButton, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addGroup(gl_decryptPanel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(this.decodeEncryptionKeyField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+								.addComponent(this.decryptPasswordField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
 								.addComponent(encryptionLabel_1, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addComponent(ballButton_1, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
@@ -271,11 +262,11 @@ public class AppWindow {
 	}
 
 	public void makeVisible() {
-		this.frmPapyrQ.setVisible(true);
+		this.frmExellos.setVisible(true);
 	}
 
 	void showSuccess(String message) {
-		JOptionPane.showMessageDialog(this.frmPapyrQ, message, "Operation Successful", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(this.frmExellos, message, "Operation Successful", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	void showException(String message, Exception exception) {
@@ -291,7 +282,6 @@ public class AppWindow {
 			}
 		}
 
-		JOptionPane.showMessageDialog(this.frmPapyrQ, message, "Encountered Exception", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(this.frmExellos, message, "Encountered Exception", JOptionPane.ERROR_MESSAGE);
 	}
-
 }

@@ -1,4 +1,4 @@
-package com.aizistral.papyrq;
+package com.aizistral.exellos;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,19 +28,7 @@ public class AppBrowseListener implements ActionListener {
 		this.fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		this.fileChooser.setFileHidingEnabled(false);
 
-		if (type == Type.ENCODE_OUTPUT) {
-			this.fileChooser.setFileFilter(new FileFilter() {
-				@Override
-				public String getDescription() {
-					return ".pdf file";
-				}
-
-				@Override
-				public boolean accept(File file) {
-					return Objects.equals(FilenameUtils.getExtension(file.getPath()).toLowerCase(), "pdf");
-				}
-			});
-		} else if (type == Type.DECODE_INPUT) {
+		if (type == Type.DECRYPT_INPUT) {
 			this.fileChooser.setFileFilter(new FileFilter() {
 				@Override
 				public String getDescription() {
@@ -67,10 +55,10 @@ public class AppBrowseListener implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		int returnState;
 
-		if (this.type == Type.ENCODE_INPUT || this.type == Type.DECODE_INPUT) {
-			returnState = this.fileChooser.showOpenDialog(this.parent.frmPapyrQ);
-		} else if (this.type == Type.ENCODE_OUTPUT || this.type == Type.DECODE_OUTPUT) {
-			returnState = this.fileChooser.showSaveDialog(this.parent.frmPapyrQ);
+		if (this.type == Type.ENCRYPT_INPUT || this.type == Type.DECRYPT_INPUT) {
+			returnState = this.fileChooser.showOpenDialog(this.parent.frmExellos);
+		} else if (this.type == Type.DECRYPT_OUTPUT) {
+			returnState = this.fileChooser.showSaveDialog(this.parent.frmExellos);
 		} else
 			return;
 
@@ -84,23 +72,18 @@ public class AppBrowseListener implements ActionListener {
 				path = file.getAbsolutePath();
 			}
 
-			if (this.type == Type.ENCODE_INPUT) {
-				this.parent.encodeInputField.setText(path);
-
-				String output = FilenameUtils.removeExtension(path) + "_encoded.pdf";
-				this.parent.encodeOutputField.setText(output);
-			} else if (this.type == Type.ENCODE_OUTPUT) {
-				this.parent.encodeOutputField.setText(path);
-			} else if (this.type == Type.DECODE_INPUT) {
-				this.parent.decodeInputField.setText(path);
-			} else if (this.type == Type.DECODE_OUTPUT) {
-				this.parent.decodeOutputField.setText(path);
+			if (this.type == Type.ENCRYPT_INPUT) {
+				this.parent.encryptInputField.setText(path);
+			} else if (this.type == Type.DECRYPT_INPUT) {
+				this.parent.decryptInputField.setText(path);
+			} else if (this.type == Type.DECRYPT_OUTPUT) {
+				this.parent.decryptOutputField.setText(path);
 			}
 		}
 	}
 
 	public static enum Type {
-		ENCODE_INPUT, ENCODE_OUTPUT, DECODE_INPUT, DECODE_OUTPUT;
+		ENCRYPT_INPUT, DECRYPT_INPUT, DECRYPT_OUTPUT;
 	}
 
 }

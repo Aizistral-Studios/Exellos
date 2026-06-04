@@ -1,4 +1,4 @@
-package com.aizistral.papyrq;
+package com.aizistral.exellos;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

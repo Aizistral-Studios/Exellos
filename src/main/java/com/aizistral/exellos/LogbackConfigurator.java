@@ -1,4 +1,4 @@
-package com.aizistral.papyrq;
+package com.aizistral.exellos;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
