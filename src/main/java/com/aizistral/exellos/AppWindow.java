@@ -41,7 +41,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 
-public class AppWindow {
+class AppWindow {
 	JFrame frmExellos;
 
 	/**

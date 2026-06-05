@@ -16,7 +16,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import lombok.SneakyThrows;
 
-public class AppBrowseListener implements ActionListener {
+class AppBrowseListener implements ActionListener {
 	private final Type type;
 	private final JFrame frame;
 	private final JTextField boundField;
