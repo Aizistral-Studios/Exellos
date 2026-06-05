@@ -239,6 +239,8 @@ class AppWindow {
 				String inputBase64 = decryptionInputArea.getText();
 				String password = decryptPasswordField.getText();
 
+				inputBase64 = StringUtils.deleteWhitespace(inputBase64);
+
 				if (StringUtils.isEmpty(inputBase64)) {
 					this.showError("Cannot decrypt - no input specified!");
 					return;
