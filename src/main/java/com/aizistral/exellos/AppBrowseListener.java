@@ -28,20 +28,6 @@ public class AppBrowseListener implements ActionListener {
 		this.fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		this.fileChooser.setFileHidingEnabled(false);
 
-		if (type == Type.DECRYPT_INPUT) {
-			this.fileChooser.setFileFilter(new FileFilter() {
-				@Override
-				public String getDescription() {
-					return ".json file";
-				}
-
-				@Override
-				public boolean accept(File file) {
-					return Objects.equals(FilenameUtils.getExtension(file.getPath()).toLowerCase(), "json");
-				}
-			});
-		}
-
 		File currentDir = Paths.get("./").toFile().getCanonicalFile();
 
 		while (!currentDir.isDirectory()) {
@@ -55,7 +41,7 @@ public class AppBrowseListener implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		int returnState;
 
-		if (this.type == Type.ENCRYPT_INPUT || this.type == Type.DECRYPT_INPUT) {
+		if (this.type == Type.ENCRYPT_INPUT) {
 			returnState = this.fileChooser.showOpenDialog(this.parent.frmExellos);
 		} else if (this.type == Type.DECRYPT_OUTPUT) {
 			returnState = this.fileChooser.showSaveDialog(this.parent.frmExellos);
@@ -74,16 +60,14 @@ public class AppBrowseListener implements ActionListener {
 
 			if (this.type == Type.ENCRYPT_INPUT) {
 				this.parent.encryptInputField.setText(path);
-			} else if (this.type == Type.DECRYPT_INPUT) {
-				this.parent.decryptInputField.setText(path);
 			} else if (this.type == Type.DECRYPT_OUTPUT) {
-				this.parent.decryptOutputField.setText(path);
+				//this.parent.decryptOutputField.setText(path);
 			}
 		}
 	}
 
 	public static enum Type {
-		ENCRYPT_INPUT, DECRYPT_INPUT, DECRYPT_OUTPUT;
+		ENCRYPT_INPUT, DECRYPT_OUTPUT;
 	}
 
 }

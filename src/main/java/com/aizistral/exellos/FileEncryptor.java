@@ -3,6 +3,7 @@ package com.aizistral.exellos;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.SecureRandom;
@@ -17,12 +18,15 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.Value;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class FileEncryptor {
-	private static final byte SCHEMA_VERSION = 1;
+	private static final byte SCHEMA_VERSION = 2;
 
 	private static final int SALT_BYTES = 16;
 	private static final int IV_BYTES = 12;
@@ -40,7 +44,11 @@ public class FileEncryptor {
 		else if (!Files.isRegularFile(file))
 			throw new IllegalStateException("Expected file '" + file + "' to exist and be a file!");
 
-		byte[] plainBytes = Files.readAllBytes(file);
+		String fileName = file.getFileName().toString();
+		byte[] fileNameBytes = fileName.getBytes(StandardCharsets.UTF_8);
+		byte[] fileBytes = Files.readAllBytes(file);
+
+		byte[] payload = createFilePayload(fileNameBytes, fileBytes);
 
 		byte[] salt = randomBytes(SALT_BYTES);
 		byte[] iv = randomBytes(IV_BYTES);
@@ -50,7 +58,7 @@ public class FileEncryptor {
 		Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
 		cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(GCM_TAG_BITS, iv));
 
-		byte[] cipherBytes = cipher.doFinal(plainBytes);
+		byte[] cipherBytes = cipher.doFinal(payload);
 
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		output.write(SCHEMA_VERSION);
@@ -62,7 +70,7 @@ public class FileEncryptor {
 	}
 
 	@SneakyThrows
-	public byte[] decrypt(String encryptedBase64, String password) {
+	public DecryptedFile decrypt(String encryptedBase64, String password) {
 		if (StringUtils.isEmpty(password))
 			throw new IllegalArgumentException("Expected password to not be empty!");
 
@@ -88,7 +96,39 @@ public class FileEncryptor {
 		Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
 		cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(GCM_TAG_BITS, iv));
 
-		return cipher.doFinal(cipherBytes);
+		byte[] payload = cipher.doFinal(cipherBytes);
+
+		return readFilePayload(payload);
+	}
+
+
+	private byte[] createFilePayload(byte[] fileNameBytes, byte[] fileBytes) throws IOException {
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+		output.write(ByteBuffer.allocate(4).putInt(fileNameBytes.length).array());
+		output.write(fileNameBytes);
+		output.write(fileBytes);
+
+		return output.toByteArray();
+	}
+
+	private DecryptedFile readFilePayload(byte[] payload) {
+		ByteBuffer buffer = ByteBuffer.wrap(payload);
+
+		int fileNameLength = buffer.getInt();
+
+		if (fileNameLength < 0 || fileNameLength > buffer.remaining())
+			throw new IllegalArgumentException("Invalid encrypted file payload.");
+
+		byte[] fileNameBytes = new byte[fileNameLength];
+		buffer.get(fileNameBytes);
+
+		byte[] fileBytes = new byte[buffer.remaining()];
+		buffer.get(fileBytes);
+
+		String fileName = new String(fileNameBytes, StandardCharsets.UTF_8);
+
+		return new DecryptedFile(fileName, fileBytes);
 	}
 
 	@SneakyThrows
@@ -110,6 +150,12 @@ public class FileEncryptor {
 		byte[] bytes = new byte[length];
 		RANDOM.nextBytes(bytes);
 		return bytes;
+	}
+
+	@Value
+	public static class DecryptedFile {
+		private String fileName;
+		private byte[] bytes;
 	}
 
 }
