@@ -58,7 +58,7 @@ class AppWindow {
 	 */
 	private void initialize() {
 		this.frmExellos = new JFrame();
-		this.frmExellos.setTitle("Exellos");
+		this.frmExellos.setTitle("Exellos [Schema V" + FileEncryptor.SCHEMA_VERSION + "]");
 		this.frmExellos.getContentPane().setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		this.frmExellos.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		this.frmExellos.setResizable(true);

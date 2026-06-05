@@ -26,7 +26,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 class FileEncryptor {
-	private static final byte SCHEMA_VERSION = 2;
+	public static final byte SCHEMA_VERSION = 2;
 
 	private static final int SALT_BYTES = 16;
 	private static final int IV_BYTES = 12;
