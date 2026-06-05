@@ -43,6 +43,8 @@ import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 
 class AppWindow {
+	private static final String APP_VERSION = "${DEV}";
+
 	JFrame frmExellos;
 
 	/**
@@ -59,7 +61,7 @@ class AppWindow {
 	 */
 	private void initialize() {
 		this.frmExellos = new JFrame();
-		this.frmExellos.setTitle("Exellos [Schema V" + FileEncryptor.SCHEMA_VERSION + "]");
+		this.frmExellos.setTitle("Exellos " + APP_VERSION + " [Schema V" + FileEncryptor.SCHEMA_VERSION + "]");
 		this.frmExellos.getContentPane().setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		this.frmExellos.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		this.frmExellos.setResizable(true);

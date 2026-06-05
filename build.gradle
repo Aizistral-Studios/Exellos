@@ -7,6 +7,7 @@ buildscript {
 	}
 	dependencies {
 		classpath "io.freefair.gradle:lombok-plugin:8.14"
+        classpath "com.gradleup.shadow:shadow-gradle-plugin:8.3.6"
 	}
 }
 
@@ -18,6 +19,7 @@ repositories {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'io.freefair.lombok'
+apply plugin: 'com.gradleup.shadow'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
@@ -38,11 +40,45 @@ configure([tasks.compileJava]) {
     }
 }
 
+task copyAndReplace(type: Copy) {
+    from(sourceSets.main.java) {
+        include '**/AppWindow.java'
+        expand 'DEV': project.version
+    }
+    
+	from(sourceSets.main.java) {
+        exclude '**/AppWindow.java'
+    }
+	
+    into project.getBuildDir().toString() + "/sources/java"
+}
+
+tasks.compileJava.dependsOn copyAndReplace
+tasks.compileJava.setSource(project.getBuildDir().toString() + '/sources/java')
+
+def commonManifest = {
+    attributes 'Main-Class': project.group + '.Main',
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version,
+            'Built-With': 'Gradle v' + project.getGradle().getGradleVersion()
+}
+
+jar {
+    manifest commonManifest
+    archiveClassifier = 'bin'
+}
+
+shadowJar {
+    archiveClassifier = 'all'
+    manifest commonManifest
+}
+
 task sourcesJar(type: Jar) {
 	archiveClassifier = 'sources'
 	from sourceSets.main.allSource
 }
 
 artifacts {
+	archives shadowJar
 	archives sourcesJar
 }
