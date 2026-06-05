@@ -5,7 +5,7 @@ import java.awt.EventQueue;
 import com.alee.laf.WebLookAndFeel;
 
 public class Main {
-	public static final StandardLogger LOGGER = new StandardLogger("PapyrQ");
+	public static final StandardLogger LOGGER = new StandardLogger("Exellos");
 
 	public static void main(String[] args) throws Exception {
 		LOGGER.log("Installing WebLaF...");
