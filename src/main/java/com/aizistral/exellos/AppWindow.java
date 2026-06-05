@@ -214,7 +214,7 @@ class AppWindow {
 		JPanel decryptPanel = new JPanel();
 		tabbedPane.addTab("Decrypt", null, decryptPanel, null);
 
-		JPasswordField decryptPasswordLabel = new JPasswordField(" Password :");
+		JLabel decryptPasswordLabel = new JLabel(" Password :");
 		decryptPasswordLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		decryptPasswordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
@@ -222,7 +222,7 @@ class AppWindow {
 		decryptInputLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		decryptInputLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-		JTextField decryptPasswordField = new JTextField();
+		JPasswordField decryptPasswordField = new JPasswordField();
 		decryptPasswordField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		decryptPasswordField.setColumns(10);
 		decryptPasswordField.setEnabled(true);
