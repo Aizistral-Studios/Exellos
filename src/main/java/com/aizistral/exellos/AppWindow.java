@@ -43,9 +43,6 @@ import javax.swing.UIManager;
 
 public class AppWindow {
 	JFrame frmExellos;
-	JTextField encryptInputField;
-	JTextField encryptPasswordField;
-	JTextField decryptPasswordField;
 
 	/**
 	 * Create the application.
@@ -87,22 +84,22 @@ public class AppWindow {
 		inputLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		inputLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-		this.encryptInputField = new JTextField();
-		this.encryptInputField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		this.encryptInputField.setColumns(10);
+		JTextField encryptInputField = new JTextField();
+		encryptInputField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		encryptInputField.setColumns(10);
 
 		JButton inputBrowse = new JButton("Browse");
-		inputBrowse.addActionListener(new AppBrowseListener(this, Type.ENCRYPT_INPUT));
+		inputBrowse.addActionListener(new AppBrowseListener(this.frmExellos, encryptInputField, Type.ENCRYPT_INPUT));
 		inputBrowse.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
 		JLabel encryptionLabel = new JLabel(" Password: ");
 		encryptionLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		encryptionLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-		this.encryptPasswordField = new JTextField();
-		this.encryptPasswordField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		this.encryptPasswordField.setColumns(10);
-		this.encryptPasswordField.setEnabled(true);
+		JTextField encryptPasswordField = new JTextField();
+		encryptPasswordField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		encryptPasswordField.setColumns(10);
+		encryptPasswordField.setEnabled(true);
 
 		JLabel lblNewLabel = new JLabel(" Output: ");
 		lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
@@ -114,8 +111,8 @@ public class AppWindow {
 		JButton ballButton = new JButton("Encrypt!");
 		ballButton.addActionListener(event -> {
 			try {
-				Path input = Paths.get(this.encryptInputField.getText());
-				String password = this.encryptPasswordField.getText();
+				Path input = Paths.get(encryptInputField.getText());
+				String password = encryptPasswordField.getText();
 				String encryptedBase64 = FileEncryptor.encrypt(input, password);
 
 				encryptionOutputArea.setText(encryptedBase64);
@@ -179,10 +176,10 @@ public class AppWindow {
 										.addGap(8)
 										.addGroup(gl_encryptPanel.createParallelGroup(Alignment.TRAILING)
 												.addGroup(gl_encryptPanel.createSequentialGroup()
-														.addComponent(this.encryptInputField, GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
+														.addComponent(encryptInputField, GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
 														.addPreferredGap(ComponentPlacement.UNRELATED)
 														.addComponent(inputBrowse, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE))
-												.addComponent(this.encryptPasswordField, GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)))
+												.addComponent(encryptPasswordField, GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)))
 								.addGroup(gl_encryptPanel.createSequentialGroup()
 										.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
 										.addPreferredGap(ComponentPlacement.RELATED)
@@ -195,11 +192,11 @@ public class AppWindow {
 						.addContainerGap()
 						.addGroup(gl_encryptPanel.createParallelGroup(Alignment.BASELINE, false)
 								.addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-								.addComponent(this.encryptInputField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+								.addComponent(encryptInputField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
 								.addComponent(inputBrowse, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addGroup(gl_encryptPanel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(this.encryptPasswordField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+								.addComponent(encryptPasswordField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
 								.addComponent(encryptionLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addComponent(ballButton, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
@@ -224,10 +221,10 @@ public class AppWindow {
 		decryptInputLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		decryptInputLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-		this.decryptPasswordField = new JTextField();
-		this.decryptPasswordField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		this.decryptPasswordField.setColumns(10);
-		this.decryptPasswordField.setEnabled(true);
+		JTextField decryptPasswordField = new JTextField();
+		decryptPasswordField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		decryptPasswordField.setColumns(10);
+		decryptPasswordField.setEnabled(true);
 
 		JTextArea decryptionInputArea = new JTextArea();
 		decryptionInputArea.setLineWrap(true);
@@ -237,7 +234,7 @@ public class AppWindow {
 		ballButton_1.addActionListener(event -> {
 			try {
 				String inputBase64 = decryptionInputArea.getText();
-				String password = this.decryptPasswordField.getText();
+				String password = decryptPasswordField.getText();
 
 				if (StringUtils.isEmpty(inputBase64)) {
 					this.showError("Cannot decrypt - no input specified!");
@@ -289,7 +286,7 @@ public class AppWindow {
 								.addGroup(gl_decryptPanel.createSequentialGroup()
 										.addComponent(decryptPasswordLabel)
 										.addGap(8)
-										.addComponent(this.decryptPasswordField, GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)))
+										.addComponent(decryptPasswordField, GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)))
 						.addContainerGap())
 				);
 		gl_decryptPanel.setVerticalGroup(
@@ -301,7 +298,7 @@ public class AppWindow {
 						.addComponent(decryptionInputArea, GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
 						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addGroup(gl_decryptPanel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(this.decryptPasswordField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+								.addComponent(decryptPasswordField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
 								.addComponent(decryptPasswordLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addComponent(ballButton_1, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
