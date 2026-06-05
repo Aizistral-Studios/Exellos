@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -96,7 +97,7 @@ class AppWindow {
 		encryptionLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		encryptionLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-		JTextField encryptPasswordField = new JTextField();
+		JPasswordField encryptPasswordField = new JPasswordField();
 		encryptPasswordField.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		encryptPasswordField.setColumns(10);
 		encryptPasswordField.setEnabled(true);
@@ -213,7 +214,7 @@ class AppWindow {
 		JPanel decryptPanel = new JPanel();
 		tabbedPane.addTab("Decrypt", null, decryptPanel, null);
 
-		JLabel decryptPasswordLabel = new JLabel(" Password :");
+		JPasswordField decryptPasswordLabel = new JPasswordField(" Password :");
 		decryptPasswordLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		decryptPasswordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
